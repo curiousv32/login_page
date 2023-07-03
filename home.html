@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home Page</title>
+  </head>
+  <body>
+    <h1>Welcome to the Home Page!</h1>
+    <form>
+      <label for="tweet">New tweet:</label>
+      <input type="text" id="tweet" name="tweet">
+      <input type="button" value="Send it" onclick="sendTweet()"><br><br>
+    </form>
+    <h2>TWEETS</h2>
+    <ul id="tweetList"></ul>
+    <br>
+    <input type="button" value="Logout" onclick="logout()">
+
+    <script>
+      function sendTweet() {
+  var tweet = document.getElementById("tweet").value;
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/tweets");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        // Tweet was successfully sent to the server
+        var tweetList = document.getElementById("tweetList");
+        var tweetItem = document.createElement("li");
+        tweetItem.appendChild(document.createTextNode(tweet));
+        var deleteButton = document.createElement("button");
+        deleteButton.appendChild(document.createTextNode("Delete"));
+        deleteButton.onclick = function() {
+          tweetList.removeChild(tweetItem);
+        };
+        tweetItem.appendChild(deleteButton);
+        tweetList.appendChild(tweetItem);
+      } else {
+        // There was an error sending the tweet
+        alert("Error sending tweet: " + xhr.statusText);
+      }
+    }
+  };
+  xhr.send(JSON.stringify({ tweet: tweet }));
+}
+
+      function logout() {
+        // You can perform a logout action here, such as redirecting to the login page.
+        alert("You have been logged out.");
+      }
+    </script>
+  </body>
+</html>
